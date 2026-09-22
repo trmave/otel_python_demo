@@ -83,6 +83,23 @@ la pasarela de pago).
 
 ![Traza distribuida de ejemplo](docs/images/example-trace.png)
 
+## Dashboard RED (Rate, Errors, Duration)
+
+Existe un dashboard provisionado en Grafana con las métricas que el
+**metrics-generator de Tempo** deriva de las trazas
+(`traces_spanmetrics_*` en el datasource Prometheus):
+
+- **Tráfico:** request rate por servicio (server spans) e iteraciones/s del generador
+- **Errores:** spans con `status_code = ERROR` por servicio
+- **Duración:** latencia p50/p95 por servicio y p95 por operación de `payments`
+  (se distingue `POST /payments` de `payments.charge` y del `GET` a inventory)
+
+URL: `http://192.168.3.60:3029/d/otel-demo-red`
+
+El JSON del dashboard está versionado en
+[dashboards/red-dashboard.json](dashboards/red-dashboard.json); para
+reprovisionarlo: `curl -u admin:admin -H 'Content-Type: application/json' -X POST http://192.168.3.60:3029/api/dashboards/db -d '{"dashboard": <json>, "overwrite": true}'`
+
 ## Detener
 
 ```bash
