@@ -1,6 +1,7 @@
 flask==3.0.3
 requests==2.32.3
-opentelemetry-sdk==1.27.0
-opentelemetry-exporter-otlp-proto-grpc==1.27.0
-opentelemetry-instrumentation-flask==0.48b0
-opentelemetry-instrumentation-requests==0.48b0
+opentelemetry-sdk==1.28.0
+opentelemetry-exporter-otlp-proto-grpc==1.28.0
+opentelemetry-instrumentation-flask==0.49b0
+opentelemetry-instrumentation-requests==0.49b0
+setuptools<81
