@@ -1,0 +1,51 @@
+# Demo de Trazas Distribuidas con OpenTelemetry + Flask
+# Servicios: payments (llama a inventory) y load-generator.
+# El backend de observabilidad (Grafana LGTM: Tempo/Loki/Grafana/Mimir)
+# YA corre en el servidor bajo otro compose (big-bear-otel-lgtm).
+name: otel-python-demo
+
+services:
+  inventory:
+    build: ./inventory
+    container_name: otel-inventory
+    ports:
+      - "5001:5001"
+    environment:
+      OTEL_SERVICE_NAME: inventory
+      OTEL_EXPORTER_OTLP_ENDPOINT: 192.168.3.60:4317
+    networks:
+      - otel-demo
+    restart: unless-stopped
+
+  payments:
+    build: ./payments
+    container_name: otel-payments
+    ports:
+      - "5000:5000"
+    environment:
+      OTEL_SERVICE_NAME: payments
+      OTEL_EXPORTER_OTLP_ENDPOINT: 192.168.3.60:4317
+      INVENTORY_URL: http://inventory:5001
+    depends_on:
+      - inventory
+    networks:
+      - otel-demo
+    restart: unless-stopped
+
+  load-generator:
+    build: ./load-generator
+    container_name: otel-load-generator
+    environment:
+      OTEL_SERVICE_NAME: load-generator
+      OTEL_EXPORTER_OTLP_ENDPOINT: 192.168.3.60:4317
+      PAYMENTS_URL: http://payments:5000
+      LOAD_INTERVAL_SECONDS: "1.0"
+    depends_on:
+      - payments
+    networks:
+      - otel-demo
+    restart: unless-stopped
+
+networks:
+  otel-demo:
+    driver: bridge

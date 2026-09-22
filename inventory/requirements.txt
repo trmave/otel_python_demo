@@ -1,0 +1,5 @@
+flask==3.0.3
+opentelemetry-sdk==1.27.0
+opentelemetry-exporter-otlp-proto-grpc==1.27.0
+opentelemetry-instrumentation-flask==0.48b0
+requests==2.32.3
