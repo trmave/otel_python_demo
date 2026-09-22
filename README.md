@@ -73,6 +73,16 @@ curl -X POST http://192.168.3.60:5000/payments \
 4. Abrir una traza: veras la cadena completa
    `load-generator → payments → inventory` con sus spans y atributos.
 
+## Ejemplo de traza real
+
+Traza distribuida capturada de Tempo mientras el generador de carga estaba
+activo. Se aprecia la cadena completa: el span raiz `loadgenerator.iteration`,
+la llamada HTTP a `payments`, la consulta a `inventory` (~17-19 ms) y el
+procesamiento del cargo `payments.charge` (~195 ms de latencia simulada de
+la pasarela de pago).
+
+![Traza distribuida de ejemplo](docs/images/example-trace.png)
+
 ## Detener
 
 ```bash
