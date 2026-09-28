@@ -44,10 +44,13 @@ Diagrama editable en [docs/diagrama-arquitectura.drawio](docs/diagrama-arquitect
 ## Levantar la demo
 
 ```bash
-cd /tmp/otel_python_demo
+cd /home/devtao/otel_python_demo
 docker compose up -d --build
 docker compose logs -f load-generator
 ```
+
+> **Nota:** el proyecto vive en `/home/devtao/otel_python_demo` (persistente).
+> No uses `/tmp` — el servidor lo vacia al reiniciar.
 
 ## Probar manualmente
 
@@ -96,9 +99,33 @@ Existe un dashboard provisionado en Grafana con las métricas que el
 
 URL: `http://192.168.3.60:3029/d/otel-demo-red`
 
-El JSON del dashboard está versionado en
-[dashboards/red-dashboard.json](dashboards/red-dashboard.json); para
-reprovisionarlo: `curl -u admin:admin -H 'Content-Type: application/json' -X POST http://192.168.3.60:3029/api/dashboards/db -d '{"dashboard": <json>, "overwrite": true}'`
+El dashboard se provisiona **automaticamente al iniciar el contenedor LGTM**
+desde [grafana/provisioning](grafana/provisioning/dashboards/provider.yaml)
+(montado en `/data/grafana/conf/provisioning`), asi que sobrevive
+recreaciones del contenedor. Los dashboards provisionados por archivo se
+ven con un icono de "provisioned" y no se pueden editar desde la UI (cualquier
+cambio se hace editando el JSON en el repo).
+
+Respaldo manual por API (si el provisioning no estuviera montado):
+
+```bash
+cd /home/devtao/otel_python_demo
+GRAFANA_PASSWORD='Cristina2019.' ./scripts/provision_dashboard.sh
+```
+
+El JSON del dashboard esta versionado en
+[dashboards/red-dashboard.json](dashboards/red-dashboard.json).
+
+## Despues de un reinicio del servidor
+
+1. Los datos de LGTM persisten en `/home/devtao/otel-lgtm_data` (volumen
+   montado en el contenedor) — dashboards, usuarios, trazas e historicos.
+2. Los contenedores de la demo (`otel-*`) vuelven solos gracias a
+   `restart: unless-stopped`. Si no:
+   ```bash
+   cd /home/devtao/otel_python_demo && docker compose up -d
+   ```
+3. Grafana queda en `http://192.168.3.60:3029` con el usuario `admin`.
 
 ## Detener
 
