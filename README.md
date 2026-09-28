@@ -101,8 +101,8 @@ URL: `http://192.168.3.60:3029/d/otel-demo-red`
 
 El dashboard se provisiona **automaticamente al iniciar el contenedor LGTM**
 desde [grafana/provisioning](grafana/provisioning/dashboards/provider.yaml)
-(montado en `/data/grafana/conf/provisioning`), asi que sobrevive
-recreaciones del contenedor. Los dashboards provisionados por archivo se
+(montado en `/otel-lgtm/grafana/conf/provisioning` dentro del contenedor),
+asi que sobrevive recreaciones del contenedor. Los dashboards provisionados por archivo se
 ven con un icono de "provisioned" y no se pueden editar desde la UI (cualquier
 cambio se hace editando el JSON en el repo).
 
